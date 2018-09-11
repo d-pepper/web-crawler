@@ -21,7 +21,7 @@ namespace WebCrawler.Tests
                 </body>
             </html>";
 
-            var builder = new SitemapBuilder();
+            var builder = new SiteMapBuilder();
 
             var results = builder.BuildSitemap("domain", htmlString);
         }

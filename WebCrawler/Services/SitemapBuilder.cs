@@ -1,34 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
+using WebCrawler.Interfaces;
 using WebCrawler.Models;
 
 namespace WebCrawler.Services
 {
-    public class SitemapBuilder
+    public class SiteMapBuilder : ISiteMapBuilder
     {
-        public async Task<List<Link>> BuildSitemap(string url)
-        {
-            var sitemap = await CrawlSitemap(url);
+        private readonly IHtmlParser _htmlParser;
+        private readonly IHtmlFetcher _htmlFetcher;
 
-            return sitemap.OrderBy(l => l.Url).ToList();
+        public SiteMapBuilder(IHtmlParser htmlParser, IHtmlFetcher htmlFetcher)
+        {
+            _htmlParser = htmlParser;
+            _htmlFetcher = htmlFetcher;
         }
 
-        private async Task<List<Link>> CrawlSitemap(string url, List<Link> linkList = null)
+        public async Task<List<Link>> BuildSiteMap(string url)
+        {
+            var siteMap = await CrawlSiteMap(url);
+
+            return siteMap.OrderBy(l => l.Url).ToList();
+        }
+
+        private async Task<List<Link>> CrawlSiteMap(string url, List<Link> linkList = null)
         {
             if (linkList == null)
             {
                 linkList = new List<Link>();
             }
 
-            var html = await GetHtmlStringAsync(url);
+            var html = await _htmlFetcher.GetHtmlStringAsync(url);
 
             if (!string.IsNullOrEmpty(html))
             {
-                var htmlParser = new HtmlParser(); // Move to DI, Make singleton?
-                var links = htmlParser.GetValidLinks(url, html).ToList();
+                var links = _htmlParser.GetValidLinks(url, html).ToList();
 
                 foreach (var link in links)
                 {
@@ -46,28 +53,12 @@ namespace WebCrawler.Services
                     if (!link.Crawled)
                     {
                         link.Crawled = true;
-                        await CrawlSitemap(link.Url, linkList);
+                        await CrawlSiteMap(link.Url, linkList);
                     }
                 }
             }
 
             return linkList;
-        }
-
-        private static async Task<string> GetHtmlStringAsync(string url)
-        {
-            var client = new HttpClient();
-
-            try
-            {
-                var html = await client.GetStringAsync(url);
-                return html;
-            }
-            catch(Exception)
-            {
-                return string.Empty;
-            }
-            
         }
     }
 }

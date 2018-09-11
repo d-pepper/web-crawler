@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using HtmlAgilityPack;
+using WebCrawler.Interfaces;
 
 namespace WebCrawler.Services
 {
-    public class HtmlParser
+    public class HtmlParser : IHtmlParser
     {
         public IEnumerable<string> GetValidLinks(string domain, string html)
         {            
