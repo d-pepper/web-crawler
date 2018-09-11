@@ -13,28 +13,12 @@ namespace WebCrawler
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(html);
 
-            var htmlBody = htmlDoc.DocumentNode.SelectNodes("//body");
+            var linkElements = htmlDoc.DocumentNode.SelectNodes("//a[@href]");
 
-            var linkElements = htmlBody.Elements("a");
-
-            var links = new List<string>();
-
-            foreach (var node in linkElements)
-            {
-                if (node.NodeType == HtmlNodeType.Element)
-                {
-                    var href = node.Attributes.First(a => a.Name == "href");
-
-                    var link = href.Value;
-
-                    if (link.Contains(domain))
-                    {
-                        links.Add(href.Value);
-                    }          
-                }
-            }           
-
-            return links;
+            return linkElements
+                .Select(linkElement => linkElement.Attributes["href"].Value)
+                .Where(linkElement => linkElement.Contains(domain))
+                .ToList();
         }
     }
 }
