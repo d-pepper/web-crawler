@@ -1,29 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using FluentAssertions;
+using Moq;
+using WebCrawler.Interfaces;
+using WebCrawler.Services;
 using Xunit;
 
 namespace WebCrawler.Tests
 {
-    public class SitemapBuiderUnitTests
+    public class SiteMapBuilderUnitTests
     {
+        // Fix test so mocked Parser returns different links
         /*
         [Fact]
-        public void Test()
+        public async Task BuildSiteMap_WhenParentAndChildPagesAreFound_ReturnsSiteMapWithLinksFrom2Pages()
         {
-            const string htmlString = @"<html>
+            const string url = "ttps://hirespace.com/";
+
+            const string htmlParentString = @"<html>
                 <body>
                     <a href='http://www.internalsite.com/link1.html'>link 1</a>
                     <a href='http://www.internalsite.com/link2.html'>link 2</a>
-                    <a href='http://www.internalsite.com/link3.html'>link 3</a>
-                    <a href='http://www.externalsite.com/link3.html'>link 4</a>
-                    <a href='http://www.externalsite.com/link3.html'>link 5</a>
                 </body>
             </html>";
 
-            var builder = new SiteMapBuilder();
+            var links = new List<string>
+            {
+                "Link1",
+                "Link2"
+            };
 
-            var results = builder.BuildSitemap("domain", htmlString);
+
+            var mockHtmlParser = Mock.Of<IHtmlParser>();
+            Mock.Get(mockHtmlParser).Setup(h => h.GetValidLinks(It.IsAny<string>(), It.IsAny<string>())).Returns(links);
+
+            var mockHtmlFetcher = Mock.Of<IHtmlFetcher>();
+            Mock.Get(mockHtmlFetcher).Setup(h => h.GetHtmlStringAsync(It.IsAny<string>())).ReturnsAsync(htmlParentString);
+
+            var builder = new SiteMapBuilder(mockHtmlParser, mockHtmlFetcher);
+
+            var results = await builder.BuildSiteMap(url);
+
+            results.Count().Should().Be(3);
         }
         */
     }

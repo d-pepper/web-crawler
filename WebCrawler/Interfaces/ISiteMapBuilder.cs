@@ -6,6 +6,6 @@ namespace WebCrawler.Interfaces
 {
     public interface ISiteMapBuilder
     {
-        Task<List<Link>> BuildSiteMap(string url);
+        Task<IEnumerable<Link>> BuildSiteMap(string url);
     }
 }

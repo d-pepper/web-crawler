@@ -1,7 +1,5 @@
-using System;
 using System.Linq;
 using FluentAssertions;
-using WebCrawler.Interfaces;
 using WebCrawler.Services;
 using Xunit;
 

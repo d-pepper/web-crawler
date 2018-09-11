@@ -17,7 +17,7 @@ namespace WebCrawler.Services
             _htmlFetcher = htmlFetcher;
         }
 
-        public async Task<List<Link>> BuildSiteMap(string url)
+        public async Task<IEnumerable<Link>> BuildSiteMap(string url)
         {
             var siteMap = await CrawlSiteMap(url);
 
@@ -37,16 +37,7 @@ namespace WebCrawler.Services
             {
                 var links = _htmlParser.GetValidLinks(url, html).ToList();
 
-                foreach (var link in links)
-                {
-                    if (!linkList.Exists(l => l.Url == link))
-                    {
-                        linkList.Add(new Link()
-                        {
-                            Url = link
-                        });
-                    }
-                }
+                AddNewLinks(linkList, links);
 
                 foreach (var link in linkList.ToList())
                 {
@@ -59,6 +50,20 @@ namespace WebCrawler.Services
             }
 
             return linkList;
+        }
+
+        private static void AddNewLinks(List<Link> linkList, List<string> links)
+        {
+            foreach (var link in links)
+            {
+                if (!linkList.Exists(l => l.Url == link))
+                {
+                    linkList.Add(new Link()
+                    {
+                        Url = link
+                    });
+                }
+            }
         }
     }
 }
