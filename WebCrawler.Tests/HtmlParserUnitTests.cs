@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using FluentAssertions;
+using WebCrawler.Services;
 using Xunit;
 
 namespace WebCrawler.Tests

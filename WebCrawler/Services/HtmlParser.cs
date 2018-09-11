@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using HtmlAgilityPack;
 
-namespace WebCrawler
+namespace WebCrawler.Services
 {
     public class HtmlParser
     {
@@ -17,7 +15,7 @@ namespace WebCrawler
 
             return linkElements
                 .Select(linkElement => linkElement.Attributes["href"].Value)
-                .Where(linkElement => linkElement.Contains(domain))
+                .Where(linkElement => linkElement.Contains(domain) || linkElement.StartsWith("/"))
                 .ToList();
         }
     }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using WebCrawler.Services;
 
 namespace WebCrawler.Controllers
 {
@@ -22,14 +23,14 @@ namespace WebCrawler.Controllers
         {
             var url = "https://hirespace.com/";
 
-            var builder = new SitemapBuilder();
+            var builder = new SitemapBuilder(); // Move to DI
 
             var client = new HttpClient();
             var html = await client.GetStringAsync(url);
 
-            var sitemap = builder.BuildSitemap(url, html);
+            var sitemap = await builder.BuildSitemap(url);
 
-            return sitemap;
+            return sitemap.Select(l => l.Url);
         }
     }
 }
